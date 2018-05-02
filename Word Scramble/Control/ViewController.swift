@@ -7,13 +7,18 @@
 //
 
 import UIKit
+import GameKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var tableView: UITableView!
+    
     var wordArray = [String]()
     var usedWords = [String]()
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
         
         //MARK: convert start.txt to wordArray an array of string
         guard let path = Bundle.main.path(forResource: "start", ofType: "txt") else {
@@ -29,11 +34,51 @@ class ViewController: UIViewController {
         print("$$ words contains:\(words)")
         wordArray = words.components(separatedBy: "\n")
         print("$$ wordArray is : \(wordArray)")
+        
+        startGame()
+    }
+    
+    func startGame() {
+        wordArray = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: wordArray) as! [String]
+        title = wordArray[0]
+        usedWords.removeAll()
+//        usedWords.removeAll(keepingCapacity: true)
+        tableView.reloadData()
+        
+    }
+    
+    @objc func promptForAnswer() {
+        let ac = UIAlertController(title: "Enter Answer", message: "Please", preferredStyle: .alert)
+        ac.addTextField()
+        
+        
+        let action = UIAlertAction(title: "Submit", style: .default) { [unowned self, ac] (alertaction) in
+            print("printing inside UIAlerAciton's closure.", alertaction)
+            let answer = ac.textFields![0] //ac does have TextField we just added.
+            //seems like textFields[0].text is "" not NIL even we don't key in any on the textFields.
+            print("$$ textFields![0] has :",answer)
+            self.submit(answer: answer.text!)
+        }
+        let submitAction = UIAlertAction(title: "Submit2", style: .default) { _ in
+            let answer = ac.textFields![0]
+            print("$$ textFields![0] has :",answer)
+
+            self.submit(answer: answer.text!)
+        }
+        
+        ac.addAction(submitAction)
+        ac.addAction(action)
+        present(ac, animated: true, completion: nil)
+
+    }
+    
+    func submit(answer: String) {
+        print("$$ answer is \(answer)",type(of: answer))
     }
 
 }
 
-// MARK: setup tableView
+// MARK:  TableView Delegate
 extension ViewController:  UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -41,7 +86,7 @@ extension ViewController:  UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return wordArray.count
+        return usedWords.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
