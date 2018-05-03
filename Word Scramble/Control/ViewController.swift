@@ -19,6 +19,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(startGame))
         
         //MARK: convert start.txt to wordArray an array of string
         guard let path = Bundle.main.path(forResource: "start", ofType: "txt") else {
@@ -70,7 +71,7 @@ class ViewController: UIViewController {
 
 extension ViewController {
     
-    func startGame() {
+    @objc func startGame() {
         wordArray = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: wordArray) as! [String]
         title = wordArray[0]
         usedWords.removeAll()
