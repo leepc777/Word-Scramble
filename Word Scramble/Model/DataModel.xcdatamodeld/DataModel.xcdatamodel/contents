@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="17E199" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ParentWord" representedClassName="ParentWord" syncable="YES" codeGenerationType="class">
+        <attribute name="color" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="subWords" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SubWord" inverseName="parent" inverseEntity="SubWord" syncable="YES"/>
+    </entity>
+    <entity name="SubWord" representedClassName="SubWord" syncable="YES" codeGenerationType="class">
+        <attribute name="done" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="parent" maxCount="1" deletionRule="Nullify" destinationEntity="ParentWord" inverseName="subWords" inverseEntity="ParentWord" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ParentWord" positionX="-45" positionY="-18" width="128" height="88"/>
+        <element name="SubWord" positionX="162" positionY="-21" width="128" height="88"/>
+    </elements>
+</model>

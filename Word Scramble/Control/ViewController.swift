@@ -42,7 +42,7 @@ class ViewController: UIViewController {
     
     
     @objc func promptForAnswer() {
-        
+
         let ac = UIAlertController(title: "Enter Answer", message: "Please", preferredStyle: .alert)
         ac.addTextField()
         
@@ -180,3 +180,17 @@ extension ViewController:  UITableViewDataSource {
     }
 }
 
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("&&&   didSelectRowAt indexPath",indexPath)
+        if let cell = tableView.cellForRow(at: indexPath) {
+            if let word = cell.textLabel?.text {
+                print("&&& you tap the word:",word)
+                let ai = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+                Helper.setActIndicator(stop: false, vc: self, activityIndicator: ai)
+                let dictionVC = UIReferenceLibraryViewController(term: word) // passs word to built-in libary.
+                self.present(dictionVC, animated: true, completion: {Helper.setActIndicator(stop: true, vc: self, activityIndicator: ai)})
+            }
+        }
+    }
+}
