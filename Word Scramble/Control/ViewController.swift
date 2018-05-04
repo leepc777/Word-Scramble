@@ -18,8 +18,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(startGame))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(promptForAnswer))
+        navigationItem.rightBarButtonItem?.title = "TapMe"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(startGame))
         
         //MARK: convert start.txt to wordArray an array of string
         guard let path = Bundle.main.path(forResource: "start", ofType: "txt") else {
@@ -41,25 +42,17 @@ class ViewController: UIViewController {
     
     
     @objc func promptForAnswer() {
+        
         let ac = UIAlertController(title: "Enter Answer", message: "Please", preferredStyle: .alert)
         ac.addTextField()
         
-        
         let action = UIAlertAction(title: "Submit", style: .default) { [unowned self, ac] (alertaction) in
-//            print("### printing inside UIAlerAciton's closure.", alertaction)
             let answer = ac.textFields![0] //ac does have TextField we just added.
             //seems like textFields[0].text is "" not NIL even we don't key in any on the textFields.
-//            print("$$ textFields![0] has :",answer)
+            self.usedWords.sort()
+            self.tableView.reloadData()
             self.submit(answer: answer.text!)
         }
-//        let submitAction = UIAlertAction(title: "Submit2", style: .default) { _ in
-//            let answer = ac.textFields![0]
-//            print("$$ textFields![0] has :",answer)
-//
-//            self.submit(answer: answer.text!)
-//        }
-//
-//        ac.addAction(submitAction)
         ac.addAction(action)
         present(ac, animated: true, completion: nil)
 
@@ -92,16 +85,17 @@ extension ViewController {
             if isOriginal(word: lowerAnswer) {
                 if isReal(word: lowerAnswer) {
                     usedWords.insert(lowerAnswer, at: 0) //put the new at index 0
-                    print("@@ userWords:\(usedWords)")
+                    print("@@ userWords: U got \(usedWords) right")
                     let indexPath = IndexPath(row: 0, section: 0)
                     tableView.insertRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
-                    
+                    title = "\(wordArray[0]) : U got \(usedWords.count)"
+
                     return //exit the submit method.
                     
                 } else {
                     
                     errorTitle = "Word not recognized"
-                    errorMessage = "you can just make them up, you know!"
+                    errorMessage = "you can't just make them up, you know!"
                     
                 }
                 
@@ -111,8 +105,8 @@ extension ViewController {
             }
         } else {
             
-            errorTitle = "ONLY letters in \(title!.lowercased())"
-            errorMessage = "You can't spell that word from \(title!.lowercased())"
+            errorTitle = "Use only letters in \(title!.lowercased())"
+            errorMessage = "New Words can't be shorter than three letters"
         }
         
         let ac = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
@@ -126,7 +120,8 @@ extension ViewController {
     // the word that user input has to be from the word we random pickup as the one at title
     // and every characters in the title can be only used once to assemble the new word
     func isPossible(word:String)->Bool {
-        var question = title!.lowercased()
+        var question = wordArray[0].lowercased()
+        if word.count<3 || word==question {return false}
         for c in word {
             if let indexOfC = question.index(of: c) {
                 question.remove(at: indexOfC)
