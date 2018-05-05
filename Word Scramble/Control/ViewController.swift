@@ -213,6 +213,8 @@ extension ViewController {
             newParentWord = ParentWord(context: self.context)
             newParentWord.color = "black"
             newParentWord.name = wordArray[0]
+            newParentWord.date = Date.init()
+            newParentWord.score = Int16(usedWords.count)
 
 
             for word in usedWords {

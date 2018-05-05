@@ -67,7 +67,9 @@ class SavedWordTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableCell", for: indexPath)
-        cell.textLabel?.text = parentWordArray[indexPath.row].name
+        let word = parentWordArray[indexPath.row]
+        cell.textLabel?.text = word.name
+        cell.detailTextLabel?.text = "You Scored \(word.score): \(word.date!)!"
         return cell
     }
 

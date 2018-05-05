@@ -12,7 +12,9 @@ import CoreData
 class SubWordsTableViewController: UITableViewController {
     
     var subWordArray = [SubWord]()
-    var selectedParentWord : ParentWord? {
+    var arrayTableView = [String]()
+    
+    var selectedParentWord : ParentWord! {
         
         didSet{
             loadSubWords()
@@ -42,7 +44,13 @@ class SubWordsTableViewController: UITableViewController {
         }
         
         do {
+            arrayTableView.removeAll()
             subWordArray = try context.fetch(request)
+            for word in subWordArray {
+                arrayTableView.append(word.name!)
+            }
+            arrayTableView.insert(selectedParentWord.name!, at: 0)
+            print("%%% new array is \(arrayTableView)")
         } catch {
             print("Error fetching data from context :\(error)")
         }
@@ -60,7 +68,7 @@ class SubWordsTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        loadSubWords()
+//        loadSubWords()
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,19 +80,20 @@ class SubWordsTableViewController: UITableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
+        return 1    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return subWordArray.count
+//        return subWordArray.count
+        return arrayTableView.count
     }
 
   
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SubWordCell", for: indexPath)
 
-        cell.textLabel?.text = subWordArray[indexPath.row].name
+//        cell.textLabel?.text = subWordArray[indexPath.row].name
+        cell.textLabel?.text = arrayTableView[indexPath.row]
         return cell
     }
   
