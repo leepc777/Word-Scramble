@@ -58,5 +58,16 @@ class Helper {
         return parsedResult
     }
     
+    //Chcek word in Built-In libary
+    
+    static func checkDic(word:String,vc:UIViewController,ai: UIActivityIndicatorView) {
+        
+                let ai = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+                Helper.setActIndicator(stop: false, vc: vc, activityIndicator: ai)
+                let dictionVC = UIReferenceLibraryViewController(term: word) // passs word to built-in libary.
+                vc.present(dictionVC, animated: true, completion: {Helper.setActIndicator(stop: true, vc: vc, activityIndicator: ai)})
+        }
+    
+
     
 }

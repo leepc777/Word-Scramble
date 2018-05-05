@@ -8,39 +8,47 @@
 
 import UIKit
 import GameKit
+import CoreData
 
 class ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var newParentWord:ParentWord!
     var wordArray = [String]()
     var usedWords = [String]()
+   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //MARK: add navi buttoms
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(promptForAnswer))
-        navigationItem.rightBarButtonItem?.title = "TapMe"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(startGame))
+        navigationItem.leftBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(startGame)),
+            UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveGame))]
         
-        //MARK: convert start.txt to wordArray an array of string
+        //MARK: Load Text File. find and convert start.txt to wordArray an array of string
         guard let path = Bundle.main.path(forResource: "start", ofType: "txt") else {
             print("$$ can't find the start.txt")
             return
         }
-//        print("$$ path to the start.text is :\(path) ")
-        
         guard let words = try? String(contentsOfFile: path) else {
             wordArray = ["Can't Load Find Start.Txt"]
             return
         }
-//        print("$$ words contains:\(words)")
         wordArray = words.components(separatedBy: "\n")
-//        print("$$ wordArray is : \(wordArray)")
-        
         startGame()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+//        startGame()
     }
     
     
+    // MARK: - AlertView to ask user Enter an answer
     @objc func promptForAnswer() {
 
         let ac = UIAlertController(title: "Enter Answer", message: "Please", preferredStyle: .alert)
@@ -67,6 +75,10 @@ extension ViewController {
     @objc func startGame() {
         wordArray = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: wordArray) as! [String]
         title = wordArray[0]
+        
+        // create
+
+
         usedWords.removeAll()
         //        usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
@@ -74,7 +86,6 @@ extension ViewController {
     }
 
     func submit(answer: String) {
-        
         
         print("$$ answer is \(answer)",type(of: answer))
         let lowerAnswer = answer.lowercased()
@@ -132,13 +143,6 @@ extension ViewController {
             }
         }
         
-//        for c in word {
-//            if let position = question.range(of: String(c)) {
-//                question.remove(at: position.lowerBound)
-//            } else {
-//                return false
-//            }
-//        }
         return true
     }
     
@@ -181,6 +185,7 @@ extension ViewController:  UITableViewDataSource {
 }
 
 extension ViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("&&&   didSelectRowAt indexPath",indexPath)
         if let cell = tableView.cellForRow(at: indexPath) {
@@ -193,4 +198,41 @@ extension ViewController: UITableViewDelegate {
             }
         }
     }
+}
+
+
+// MARK: Core Data
+extension ViewController {
+    
+    // create Core Data entities : ParentWord and SubWord, ONLY when Users enter at least one correct word. Also we remove the current ParentWord before we create another one. TO prevent  multiple ParentWords with the same name.The new one should have more correct words anyway.
+    @objc func saveGame() {
+        
+        if usedWords.count > 0 {
+            
+            if newParentWord != nil { context.delete(newParentWord)}
+            newParentWord = ParentWord(context: self.context)
+            newParentWord.color = "black"
+            newParentWord.name = wordArray[0]
+
+
+            for word in usedWords {
+                let newSubWord = SubWord(context: self.context)
+                newSubWord.name = word
+                newSubWord.done = false
+                newSubWord.parent = newParentWord
+            }
+            
+            // write to context's parent store
+            do {
+                try context.save()
+            } catch {
+                print("$$$ Error saving context,\(error)")
+            }
+            
+        }
+        
+        let vc = storyboard?.instantiateViewController(withIdentifier: "SavedWords") as! SavedWordTableViewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
 }

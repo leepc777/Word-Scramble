@@ -15,6 +15,8 @@
 		223506042095391300390ACD /* start.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223506032095391300390ACD /* start.txt */; };
 		2287CE83209C621800F36F11 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2287CE82209C621800F36F11 /* Helper.swift */; };
 		2287CE86209C6C9300F36F11 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2287CE84209C6C9300F36F11 /* DataModel.xcdatamodeld */; };
+		2287CE88209C7EFB00F36F11 /* SavedWordTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2287CE87209C7EFB00F36F11 /* SavedWordTableViewController.swift */; };
+		2287CE8A209C887D00F36F11 /* SubWordsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2287CE89209C887D00F36F11 /* SubWordsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		223506032095391300390ACD /* start.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = start.txt; sourceTree = "<group>"; };
 		2287CE82209C621800F36F11 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		2287CE85209C6C9300F36F11 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		2287CE87209C7EFB00F36F11 /* SavedWordTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedWordTableViewController.swift; sourceTree = "<group>"; };
+		2287CE89209C887D00F36F11 /* SubWordsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubWordsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +95,8 @@
 		22350602209538FE00390ACD /* Control */ = {
 			isa = PBXGroup;
 			children = (
+				2287CE87209C7EFB00F36F11 /* SavedWordTableViewController.swift */,
+				2287CE89209C887D00F36F11 /* SubWordsTableViewController.swift */,
 				223505EE209531D900390ACD /* AppDelegate.swift */,
 				223505F0209531D900390ACD /* ViewController.swift */,
 			);
@@ -173,6 +179,8 @@
 				223505F1209531D900390ACD /* ViewController.swift in Sources */,
 				2287CE86209C6C9300F36F11 /* DataModel.xcdatamodeld in Sources */,
 				223505EF209531D900390ACD /* AppDelegate.swift in Sources */,
+				2287CE88209C7EFB00F36F11 /* SavedWordTableViewController.swift in Sources */,
+				2287CE8A209C887D00F36F11 /* SubWordsTableViewController.swift in Sources */,
 				2287CE83209C621800F36F11 /* Helper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
