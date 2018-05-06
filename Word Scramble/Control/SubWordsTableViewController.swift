@@ -69,11 +69,13 @@ class SubWordsTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
 //        loadSubWords()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(editTable))
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+
+    @objc func editTable() {
+        tableView.isEditing = !tableView.isEditing
     }
 
     // MARK: - Table view data source
@@ -107,6 +109,15 @@ class SubWordsTableViewController: UITableViewController {
                 let dictionVC = UIReferenceLibraryViewController(term: word) // passs word to built-in libary.
                 self.present(dictionVC, animated: true, completion: {Helper.setActIndicator(stop: true, vc: self, activityIndicator: ai)})
             }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            context.delete(subWordArray[indexPath.row-1])
+            arrayTableView.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            
         }
     }
 

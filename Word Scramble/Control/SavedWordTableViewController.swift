@@ -45,11 +45,17 @@ class SavedWordTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(editTable))
         loadData()
     }
 
+    @objc func editTable() {
+        tableView.isEditing = !tableView.isEditing
+    }
 
-    // MARK: - Table view data source
+    
+
+    // MARK: - Table view data source and delegate methods
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -74,4 +80,14 @@ class SavedWordTableViewController: UITableViewController {
         vc.selectedParentWord = parentWordArray[indexPath.row]
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            context.delete(parentWordArray[indexPath.row]) // delete it from context and store first
+            parentWordArray.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)
+        }
+    }
+    
 }
+
