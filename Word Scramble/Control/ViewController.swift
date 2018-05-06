@@ -23,8 +23,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        print("&&& where is our data",FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+        
         //MARK: add navi buttoms
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(promptForAnswer))
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(promptForAnswer))
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(promptForAnswer)),
+            UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(crudCoreData))
+        ]
         navigationItem.leftBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(startGame)),
             UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveGame))]
@@ -51,7 +59,7 @@ class ViewController: UIViewController {
     // MARK: - AlertView to ask user Enter an answer
     @objc func promptForAnswer() {
 
-        let ac = UIAlertController(title: "Enter Answer", message: "Please", preferredStyle: .alert)
+        let ac = UIAlertController(title: "Enter Answer", message: nil, preferredStyle: .alert)
         ac.addTextField()
         
         let action = UIAlertAction(title: "Submit", style: .default) { [unowned self, ac] (alertaction) in
@@ -73,12 +81,16 @@ class ViewController: UIViewController {
 extension ViewController {
     
     @objc func startGame() {
+        
+        print("%% in startGame()")
+        // store Context if there is score
+        if usedWords.count > 0 {
+            saveTableToStore()
+        }
+
         wordArray = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: wordArray) as! [String]
         title = wordArray[0]
         
-        // create
-
-
         usedWords.removeAll()
         //        usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
@@ -116,8 +128,8 @@ extension ViewController {
             }
         } else {
             
-            errorTitle = "Use only letters in \(title!.lowercased())"
-            errorMessage = "New Words can't be shorter than three letters"
+            errorTitle = "Use only letters in - \(wordArray[0].lowercased()) -"
+            errorMessage = "Also Can't be shorter than three letters"
         }
         
         let ac = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
@@ -206,35 +218,50 @@ extension ViewController {
     
     // create Core Data entities : ParentWord and SubWord, ONLY when Users enter at least one correct word. Also we remove the current ParentWord before we create another one. TO prevent  multiple ParentWords with the same name.The new one should have more correct words anyway.
     @objc func saveGame() {
-        
+        print("%% in saveGame()")
+
         if usedWords.count > 0 {
             
-            if newParentWord != nil { context.delete(newParentWord)}
-            newParentWord = ParentWord(context: self.context)
-            newParentWord.color = "black"
-            newParentWord.name = wordArray[0]
-            newParentWord.date = Date.init()
-            newParentWord.score = Int16(usedWords.count)
-
-
-            for word in usedWords {
-                let newSubWord = SubWord(context: self.context)
-                newSubWord.name = word
-                newSubWord.done = false
-                newSubWord.parent = newParentWord
-            }
-            
-            // write to context's parent store
-            do {
-                try context.save()
-            } catch {
-                print("$$$ Error saving context,\(error)")
-            }
-            
+            saveTableToStore()
         }
         
         let vc = storyboard?.instantiateViewController(withIdentifier: "SavedWords") as! SavedWordTableViewController
         navigationController?.pushViewController(vc, animated: true)
     }
 
+    func saveContext() {
+        do {
+            try context.save()
+            print("&&& saving context to store")
+        } catch {
+            print("$$$ Error saving context,\(error)")
+        }
+    }
+
+    func saveTableToStore() {
+        
+// we want to delete the dupliates in context and store but ParentWord is Nil at the beginning. So we have to use if let
+        if newParentWord != nil && newParentWord.name == wordArray[0] { context.delete(newParentWord)}
+
+        newParentWord = ParentWord(context: self.context)
+        newParentWord.color = "black"
+        newParentWord.name = wordArray[0]
+        newParentWord.date = Date.init()
+        newParentWord.score = Int16(usedWords.count)
+        
+        
+        for word in usedWords {
+            let newSubWord = SubWord(context: self.context)
+            newSubWord.name = word
+            newSubWord.done = false
+            newSubWord.parent = newParentWord
+        }
+        
+        // write to context's parent store
+        saveContext()
+    }
+    
+    @objc func crudCoreData() {
+        print("&&& you tap action to trigger crudCoreData()")
+    }
 }

@@ -48,10 +48,6 @@ class SavedWordTableViewController: UITableViewController {
         loadData()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 
     // MARK: - Table view data source
 
@@ -69,7 +65,7 @@ class SavedWordTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableCell", for: indexPath)
         let word = parentWordArray[indexPath.row]
         cell.textLabel?.text = word.name
-        cell.detailTextLabel?.text = "You Scored \(word.score): \(word.date!)!"
+        cell.detailTextLabel?.text = "Score: \(word.score) --  \(word.date!)"
         return cell
     }
 
