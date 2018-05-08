@@ -11,6 +11,8 @@ import CoreData
 
 class SavedWordTableViewController: UITableViewController {
 
+    let dateFormatter = DateFormatter()
+
     var parentWordArray = [ParentWord]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
@@ -39,13 +41,16 @@ class SavedWordTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .short
+        dateFormatter.locale = Locale(identifier: "en_US")
 
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(editTable))
+        
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(editTable)),
+            UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(playSavedWord))
+        ]
         loadData()
     }
 
@@ -53,9 +58,11 @@ class SavedWordTableViewController: UITableViewController {
         tableView.isEditing = !tableView.isEditing
     }
 
-    
+    @objc func playSavedWord() {
 
-    // MARK: - Table view data source and delegate methods
+    }
+
+    // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -71,18 +78,23 @@ class SavedWordTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableCell", for: indexPath)
         let word = parentWordArray[indexPath.row]
         cell.textLabel?.text = word.name
-        cell.detailTextLabel?.text = "Score: \(word.score) --  \(word.date!)"
+        cell.detailTextLabel?.text = "Score: \(word.score) --  \(dateFormatter.string(from: word.date!))"
+//        print("***  date. :",word.date!.description,dateFormatter.string(from: word.date!))
         return cell
     }
 
+    // MARK: - Table View delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "SubWords") as! SubWordsTableViewController
         vc.selectedParentWord = parentWordArray[indexPath.row]
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .delete
+    }
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
+                if editingStyle == .delete {
             context.delete(parentWordArray[indexPath.row]) // delete it from context and store first
             parentWordArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.left)

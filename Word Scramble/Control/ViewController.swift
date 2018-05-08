@@ -47,14 +47,27 @@ class ViewController: UIViewController {
             return
         }
         wordArray = words.components(separatedBy: "\n")
+        
+        
         startGame()
         
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
-//        startGame()
+        super .viewWillAppear(true)
+        
+        if DataModel.savedWords != nil {
+            startGame()
+        }
+       print("@@@  in viewWillAppear",DataModel.savedWords)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        DataModel.savedWords = nil
+        print("@@@  in viewWillDisAppear",DataModel.savedWords)
+
+    }
     
     // MARK: - AlertView to ask user Enter an answer
     @objc func promptForAnswer() {
@@ -87,12 +100,16 @@ extension ViewController {
         if usedWords.count > 0 {
             saveTableToStore()
         }
-
-        wordArray = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: wordArray) as! [String]
-        title = wordArray[0]
-        
         usedWords.removeAll()
-        //        usedWords.removeAll(keepingCapacity: true)
+        wordArray = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: wordArray) as! [String]
+        
+        if DataModel.savedWords != nil {
+            wordArray[0] = DataModel.savedWords[0]
+            usedWords = DataModel.savedWords
+            usedWords.remove(at: 0)
+        }
+        title = wordArray[0]
+//        usedWords.removeAll()
         tableView.reloadData()
         
     }
@@ -123,7 +140,7 @@ extension ViewController {
                 }
                 
             } else {
-                errorTitle = "Word userd already"
+                errorTitle = "Word used already"
                 errorMessage = "try another word!"
             }
         } else {
@@ -216,7 +233,7 @@ extension ViewController: UITableViewDelegate {
 // MARK: Core Data
 extension ViewController {
     
-    // create Core Data entities : ParentWord and SubWord, ONLY when Users enter at least one correct word. Also we remove the current ParentWord before we create another one. TO prevent  multiple ParentWords with the same name.The new one should have more correct words anyway.
+    // create Core Data entities : ParentWord and SubWord ,ONLY when Users enter at least one correct word. Also we remove the current ParentWord before we create another one. TO prevent  multiple ParentWords with the same name.The new one should have more correct words anyway.
     @objc func saveGame() {
         print("%% in saveGame()")
 

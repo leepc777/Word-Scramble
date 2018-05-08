@@ -12,7 +12,7 @@ import CoreData
 class SubWordsTableViewController: UITableViewController {
     
     var subWordArray = [SubWord]()
-    var arrayTableView = [String]()
+    var arrayTableView = [String]() // this is the one for View Table Data Source
     
     var selectedParentWord : ParentWord! {
         
@@ -28,8 +28,6 @@ class SubWordsTableViewController: UITableViewController {
     //  Load Core Data
     func loadSubWords(with request:NSFetchRequest<SubWord> = SubWord.fetchRequest(), predicate:NSPredicate?=nil) {
         
-        //  item has parentCategory property which is a Cateory Type
-        //        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", (selectedCategory?.name)!)
         
         let ParentWordPredicate = NSPredicate(format: "parent == %@", selectedParentWord!)
         
@@ -46,6 +44,9 @@ class SubWordsTableViewController: UITableViewController {
         do {
             arrayTableView.removeAll()
             subWordArray = try context.fetch(request)
+            //sort a custom array.
+            subWordArray = subWordArray.sorted{$0.name!<$1.name! }
+
             for word in subWordArray {
                 arrayTableView.append(word.name!)
             }
@@ -62,22 +63,16 @@ class SubWordsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-        
 //        loadSubWords()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(editTable))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(playSavedWord))
     }
 
 
-    @objc func editTable() {
-        tableView.isEditing = !tableView.isEditing
+    @objc func playSavedWord() {
+        DataModel.savedWords = arrayTableView
+        navigationController?.popToRootViewController(animated: true)
     }
-
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
