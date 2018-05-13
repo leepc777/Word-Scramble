@@ -27,15 +27,22 @@ class ViewController: UIViewController {
         print("&&& where is our data",FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         
-        //MARK: add navi buttoms
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(promptForAnswer))
+        //MARK: add navi buttons
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named:"check") , landscapeImagePhone: nil, style: .plain, target: self, action: #selector(crudCoreData))
+
+        let saveNaviButton = Helper.makeNaviButton(imageName: "save", target: self, action: #selector(saveGame))
+        
+        let playNaviButton = Helper.makeNaviButton(imageName: "add", target: self, action: #selector(promptForAnswer))
+
+        let refreshNaviButton = Helper.makeNaviButton(imageName: "restart", target: self, action: #selector(startGame))
+        
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(promptForAnswer)),
-            UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(crudCoreData))
+            playNaviButton
         ]
         navigationItem.leftBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(startGame)),
-            UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveGame))]
+            refreshNaviButton,
+            saveNaviButton
+        ]
         
         //MARK: Load Text File. find and convert start.txt to wordArray an array of string
         guard let path = Bundle.main.path(forResource: "start", ofType: "txt") else {
@@ -63,6 +70,7 @@ class ViewController: UIViewController {
        print("@@@  in viewWillAppear",DataModel.savedWords)
     }
     
+    // To empty savedWrods before disappear
     override func viewWillDisappear(_ animated: Bool) {
         DataModel.savedWords = nil
         print("@@@  in viewWillDisAppear",DataModel.savedWords)
@@ -93,6 +101,7 @@ class ViewController: UIViewController {
 
 extension ViewController {
     
+    // start a new game either from begining or refreshing.
     @objc func startGame() {
         
         print("%% in startGame()")
@@ -102,11 +111,13 @@ extension ViewController {
         }
         usedWords.removeAll()
         wordArray = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: wordArray) as! [String]
-        
+
+        //if it's playing savedWords
         if DataModel.savedWords != nil {
             wordArray[0] = DataModel.savedWords[0]
             usedWords = DataModel.savedWords
-            usedWords.remove(at: 0)
+            usedWords.remove(at: 0) // We don't want to show the first row
+            DataModel.savedWords = nil // we only need to load it once.
         }
         title = wordArray[0]
 //        usedWords.removeAll()

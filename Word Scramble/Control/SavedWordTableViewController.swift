@@ -11,66 +11,36 @@ import CoreData
 
 class SavedWordTableViewController: UITableViewController {
 
+    
     let dateFormatter = DateFormatter()
 
     var parentWordArray = [ParentWord]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
-    //MARK: - Data Manipulation Methods
     
-    func saveData() {
-        do {
-            try context.save()
-        } catch {
-            print("$$$ Error saving context,\(error)")
-        }
-        tableView.reloadData()
-    }
-    
-    func loadData(with request:NSFetchRequest<ParentWord> = ParentWord.fetchRequest()) {
-        do {
-            parentWordArray = try context.fetch(request)
-        } catch {
-            print("Error fetching data from context :\(error)")
-        }
-        tableView.reloadData()
-    }
-
-    
+    @IBOutlet weak var searchWordBar: UISearchBar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        searchWordBar.delegate = self
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .short
         dateFormatter.locale = Locale(identifier: "en_US")
 
-        
-        
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(editTable)),
-            UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(playSavedWord))
-        ]
         loadData()
     }
+}
 
-    @objc func editTable() {
-        tableView.isEditing = !tableView.isEditing
-    }
 
-    @objc func playSavedWord() {
-
-    }
-
-    // MARK: - Table view data source
+    // MARK: - Table View DataSource
+extension SavedWordTableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return parentWordArray.count
     }
 
@@ -103,3 +73,91 @@ class SavedWordTableViewController: UITableViewController {
     
 }
 
+//MARK: - Core Data Manipulation methods
+extension SavedWordTableViewController {
+    
+    func saveData() {
+        do {
+            try context.save()
+        } catch {
+            print("$$$ Error saving context,\(error)")
+        }
+        tableView.reloadData()
+    }
+    
+//    func loadData(with request:NSFetchRequest<ParentWord> = ParentWord.fetchRequest()) {
+//
+//
+//        do {
+//            parentWordArray = try context.fetch(request)
+//        } catch {
+//            print("Error fetching data from context :\(error)")
+//        }
+//        tableView.reloadData()
+//    }
+    
+    
+    func loadData(with request:NSFetchRequest<ParentWord> = ParentWord.fetchRequest(),predicate:NSPredicate?=nil) {
+        
+        if let predicate = predicate {
+            request.predicate = predicate
+        } else {
+            let sortDate = NSSortDescriptor(key: "date", ascending: false)
+            request.sortDescriptors = [sortDate]
+        }
+        
+        do {
+            parentWordArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context :\(error)")
+        }
+            tableView.reloadData()
+            return
+        
+    }
+
+
+}
+
+
+// MARK- Search Bar Delegate Optioanl methods
+extension SavedWordTableViewController: UISearchBarDelegate {
+    
+    
+    // This optional searchBarSearchButtonClicked got triggered when taping search button. If it is empty(user didn't key in any), searchBar and keyboard will be dismissed by tapping search key on keyboard
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        print("@@@ searchBarSearchButtonClicked got triggered")
+        if searchBar.text == "" {
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+                self.loadData()
+            }
+        }
+    }
+
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+                print("@@@ serachBar textDidChange func got call and text is\(searchBar.text)")
+        //        if searchBar.text?.count == 0 {
+        if searchBar.text == "" {
+            
+            loadData() //restore to the original table vew
+            
+            DispatchQueue.main.async { //
+                searchBar.resignFirstResponder()
+            }
+            
+        }
+        else {
+            let request : NSFetchRequest<ParentWord> = ParentWord.fetchRequest()
+            let predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchBar.text!)
+            request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+            print("!!! textDidChange got call and request is \(request)")
+            
+            loadData(with: request, predicate:predicate)
+            
+        }
+        
+    }
+
+}

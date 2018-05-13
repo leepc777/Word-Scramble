@@ -63,9 +63,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="SCa-i4-bnk">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TableCell" textLabel="gNa-Qs-PgT" detailTextLabel="Q13-AO-tvt" style="IBUITableViewCellStyleSubtitle" id="qWa-vm-4wH">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="72" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qWa-vm-4wH" id="YM5-j4-MAN">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -94,6 +99,9 @@
                             <outlet property="delegate" destination="wEt-lw-eCb" id="3qh-xd-NCY"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <outlet property="searchWordBar" destination="SCa-i4-bnk" id="VnV-x9-pUc"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HL5-YI-tcm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

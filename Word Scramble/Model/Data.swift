@@ -9,6 +9,5 @@
 import Foundation
 
 class DataModel: NSObject {
-    
     static var savedWords : [String]!
 }

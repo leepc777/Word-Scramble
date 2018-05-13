@@ -58,7 +58,7 @@ class Helper {
         return parsedResult
     }
     
-    //Chcek word in Built-In libary
+    //Chcek word in Apple dictionary
     
     static func checkDic(word:String,vc:UIViewController,ai: UIActivityIndicatorView) {
         
@@ -67,7 +67,26 @@ class Helper {
                 let dictionVC = UIReferenceLibraryViewController(term: word) // passs word to built-in libary.
                 vc.present(dictionVC, animated: true, completion: {Helper.setActIndicator(stop: true, vc: vc, activityIndicator: ai)})
         }
-    
 
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
+    func saveData() {
+        do {
+            try context.save()
+        } catch {
+            print("$$$ Error saving context,\(error)")
+        }
+    }
     
+    static func makeNaviButton(imageName:String,target:UIViewController,action:Selector) -> UIBarButtonItem {
+        
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage (named: imageName), for: .normal)
+        button.frame = CGRect(x: 0.0, y: 0.0, width: 35.0, height: 35.0)
+        button.addTarget(target, action: action, for: UIControlEvents.touchUpInside)
+        let barButtonItem = UIBarButtonItem(customView: button)
+        return barButtonItem
+
+    }
+
 }

@@ -28,11 +28,8 @@ class SubWordsTableViewController: UITableViewController {
     //  Load Core Data
     func loadSubWords(with request:NSFetchRequest<SubWord> = SubWord.fetchRequest(), predicate:NSPredicate?=nil) {
         
-        
         let ParentWordPredicate = NSPredicate(format: "parent == %@", selectedParentWord!)
-        
-        
-        
+
         //optional binding to handle nil at predicate
         if let predicate = predicate {
             request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [ParentWordPredicate,predicate])
@@ -65,7 +62,10 @@ class SubWordsTableViewController: UITableViewController {
 
 //        loadSubWords()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(playSavedWord))
+        let playNaviButton = Helper.makeNaviButton(imageName: "start", target: self, action: #selector(playSavedWord))
+
+        navigationItem.rightBarButtonItem = playNaviButton
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(playSavedWord))
     }
 
 
@@ -108,7 +108,7 @@ class SubWordsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
+        if editingStyle == .delete && indexPath.row != 0{
             context.delete(subWordArray[indexPath.row-1])
             arrayTableView.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .left)

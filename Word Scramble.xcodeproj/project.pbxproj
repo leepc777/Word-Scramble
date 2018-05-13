@@ -18,6 +18,7 @@
 		2287CE88209C7EFB00F36F11 /* SavedWordTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2287CE87209C7EFB00F36F11 /* SavedWordTableViewController.swift */; };
 		2287CE8A209C887D00F36F11 /* SubWordsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2287CE89209C887D00F36F11 /* SubWordsTableViewController.swift */; };
 		229D493120A1B11C0020015D /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229D493020A1B11C0020015D /* Data.swift */; };
+		229D493320A465780020015D /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229D493220A465780020015D /* DataController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		2287CE87209C7EFB00F36F11 /* SavedWordTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedWordTableViewController.swift; sourceTree = "<group>"; };
 		2287CE89209C887D00F36F11 /* SubWordsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubWordsTableViewController.swift; sourceTree = "<group>"; };
 		229D493020A1B11C0020015D /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		229D493220A465780020015D /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				2287CE82209C621800F36F11 /* Helper.swift */,
 				229D493020A1B11C0020015D /* Data.swift */,
 				2287CE84209C6C9300F36F11 /* DataModel.xcdatamodeld */,
+				229D493220A465780020015D /* DataController.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 				2287CE86209C6C9300F36F11 /* DataModel.xcdatamodeld in Sources */,
 				223505EF209531D900390ACD /* AppDelegate.swift in Sources */,
 				2287CE88209C7EFB00F36F11 /* SavedWordTableViewController.swift in Sources */,
+				229D493320A465780020015D /* DataController.swift in Sources */,
 				2287CE8A209C887D00F36F11 /* SubWordsTableViewController.swift in Sources */,
 				2287CE83209C621800F36F11 /* Helper.swift in Sources */,
 			);
